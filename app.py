@@ -17,23 +17,21 @@ st.set_page_config(
 )
 
 # --------------------------------------------------
-# BACKGROUND ART
-# Keep delivery_background.PNG beside app.py in your project.
-# If the image is missing, the app falls back to the gradient theme.
+# DECORATIVE FOOD-DELIVERY ART
+# Keep delivery_side_art.png beside app.py. The app falls back to gradients if absent.
 # --------------------------------------------------
-BACKGROUND_IMAGE_PATH = Path(__file__).with_name("delivery_background.PNG")
+SIDE_ART_PATH = Path(__file__).with_name("delivery_side_art.png")
 
 
-def load_background_image_css():
-    """Return a local background image as a CSS data URL, if available."""
-    if not BACKGROUND_IMAGE_PATH.exists():
+def load_side_art_css():
+    """Return the locally stored decorative artwork as a CSS data URL."""
+    if not SIDE_ART_PATH.exists():
         return "none"
-
-    encoded_image = base64.b64encode(BACKGROUND_IMAGE_PATH.read_bytes()).decode("utf-8")
+    encoded_image = base64.b64encode(SIDE_ART_PATH.read_bytes()).decode("utf-8")
     return f"url('data:image/png;base64,{encoded_image}')"
 
 
-BACKGROUND_IMAGE_CSS = load_background_image_css()
+SIDE_ART_CSS = load_side_art_css()
 
 # --------------------------------------------------
 # CUSTOM CSS: FOOD DELIVERY ART + NEON PINK/PURPLE GLASS THEME
@@ -45,12 +43,12 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --black: #09060D;
-        --black-card: #120B18;
-        --purple: #351044;
-        --purple-light: #54206A;
-        --pink: #FF2E93;
-        --pink-light: #FF70B8;
+        --black: #170B2D;
+        --black-card: #24113F;
+        --purple: #45206B;
+        --purple-light: #7543A8;
+        --pink: #FF4FA3;
+        --pink-light: #FF9ACB;
         --white: #FFFFFF;
     }
 
@@ -58,17 +56,35 @@ st.markdown(
         font-family: 'Inter', sans-serif;
     }
 
-    /* Reference background: burger, neon delivery route and night city */
+    /* Rich purple gradient background — intentionally no black background */
     .stApp {
-        background-color: #080611 !important;
-        background-image:
-            linear-gradient(100deg, rgba(7, 5, 17, 0.50), rgba(7, 5, 17, 0.70)),
-            __BACKGROUND_IMAGE_CSS__;
-        background-size: cover, cover;
-        background-position: center, center;
-        background-repeat: no-repeat, no-repeat;
-        background-attachment: fixed, fixed;
+        background: linear-gradient(125deg, #32104F 0%, #45206B 32%, #512477 58%, #35124F 100%) !important;
+        background-attachment: fixed !important;
         color: var(--white) !important;
+        position: relative;
+        isolation: isolate;
+    }
+
+    /* Decorative scooter + food artwork anchored on the right, behind controls */
+    .stApp::after {
+        content: "";
+        position: fixed;
+        right: -2.5vw;
+        bottom: -3vh;
+        width: min(46vw, 720px);
+        height: min(58vh, 570px);
+        background-image: __SIDE_ART_CSS__;
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        background-size: contain;
+        opacity: 0.28;
+        filter: drop-shadow(0 10px 35px rgba(255, 79, 163, 0.25));
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    @media (max-width: 850px) {
+        .stApp::after { width: 65vw; height: 34vh; opacity: 0.13; }
     }
 
     [data-testid="stAppViewContainer"],
@@ -79,7 +95,7 @@ st.markdown(
     }
 
     [data-testid="stHeader"] {
-        background: rgba(8, 6, 17, 0.35) !important;
+        background: rgba(53, 18, 79, 0.35) !important;
         backdrop-filter: blur(12px);
     }
 
@@ -91,8 +107,9 @@ st.markdown(
         pointer-events: none;
         z-index: 0;
         background:
-            radial-gradient(ellipse at 8% 8%, rgba(255, 46, 147, 0.13), transparent 34%),
-            radial-gradient(ellipse at 88% 36%, rgba(140, 54, 255, 0.12), transparent 38%);
+            radial-gradient(ellipse at 8% 8%, rgba(255, 115, 194, 0.22), transparent 34%),
+            radial-gradient(ellipse at 88% 36%, rgba(174, 112, 255, 0.24), transparent 38%),
+            radial-gradient(ellipse at 48% 100%, rgba(255, 79, 163, 0.10), transparent 45%);
         animation: neon-breathe 9s ease-in-out infinite alternate;
     }
 
@@ -358,7 +375,7 @@ st.markdown(
 
     footer, #MainMenu { visibility: hidden; }
     </style>
-    """.replace("__BACKGROUND_IMAGE_CSS__", BACKGROUND_IMAGE_CSS),
+    """.replace("__SIDE_ART_CSS__", SIDE_ART_CSS),
     unsafe_allow_html=True,
 )
 
